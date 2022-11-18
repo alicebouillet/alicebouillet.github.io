@@ -1,0 +1,29 @@
+header {
+font-family: Arial;
+background-color:black;
+color:white;
+text-align: center;
+}
+
+footer {
+background-color:lightgrey;	
+}
+
+.flex{
+	display:flex;
+	justify-content:space-evenly;
+}
+
+.flex div{
+	display:flex;
+	justify-content:space-evenly;
+	background-color:gainsboro;	
+	/*width:500px;*/
+}
+
+.flex1 p,h2,img{
+	display:flex;
+	margin:10px 10px 10px 10px;
+	flex-direction : column;
+	justify-content:center;
+}
