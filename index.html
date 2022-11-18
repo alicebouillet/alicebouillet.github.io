@@ -3,27 +3,56 @@
 	<head>
 	  <meta charset="UTF-8">
 	  <link rel="stylesheet" href="td4.css" />
+	<script>
+		function afficheVille()
+		{
 		
+  let villeChoisie = document.getElementById("choixVille").value;
+
+
+  let villes = document.getElementsByClassName("city");
+
+ 
+ 
+  for (i=0; i<villes.length; i++) {
+    if (villes[i].id == villeChoisie) {
+      // garder l'element -> ELEMENT.style.display= "";
+	  villes[i].style.display= "";
+    } else {
+	  villes[i].style.display= "none";
+    }
+  }
+		}
+		</script>	
 	</head>
 	<body>
 		<header>
 			<br/>
 			<h2>TD n°4 Technologies web – Application météo </h2>
 			<br/>
+			<select id = "choixVille" onchange = afficheVille()>
+				<option value = "Niort">Niort </option>
+				<option value = "Rio"> Rio de Janeiro</option>
+				<option value = "Reykjavik"> Reykjavik </option>
+			</select>
 		</header>
-
-		<div class="flex">
-			<div class="flex1">
+		<select id = "choixVille" onchange = afficheVille()>
+				<option value = "Niort">Niort </option>
+				<option value = "Rio"> Rio de Janeiro</option>
+				<option value = "Reykjavik"> Reykjavik </option>
+		</select>
+		<div class="flex" >
+			<div class="flex1 city" id = Niort>
 				<h2>Niort</h2>
 				<p>12°, pluvieux</p>
 				<img src="pluvieux.png" width="20%"/>
 			</div>
-			<div class="flex1" >
+			<div class="flex1 city" id = Rio>
 				<h2>Rio de Janeiro</h2>
 				<p>29°, orageux</p>
 				<img src="orageux.png" width="20%"/>
 			</div>
-			<div class="flex1">
+			<div class="flex1 city" id = Reykjavik >
 				<h2>Reykjavik</h2>
 				<p>-10°, ensoleillé</p>
 				<img src="ensoleille.png" width="20%"/>
