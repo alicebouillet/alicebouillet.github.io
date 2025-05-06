@@ -18,6 +18,8 @@ if "df" not in st.session_state:
         ])
 
 df = st.session_state.df
+df["Description"] = df["Description"].astype(str)
+df["Date de début"] = pd.to_datetime(df["Date de début"], errors='coerce')
 
 # --- Sidebar navigation ---
 st.sidebar.title("Navigation")
