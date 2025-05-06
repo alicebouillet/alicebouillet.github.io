@@ -201,7 +201,7 @@ st.sidebar.markdown("---")
 if st.sidebar.button("💾 Sauvegarder les modifications"):
     try:
         # Sauvegarde dans le fichier Excel
-        df.to_excel(lien_sauvegarde, index=False, engine='openpyxl')
+        df.to_excel(lien_sauvegarde, index=False)
 
         st.sidebar.success(f"Fichier enregistré dans : `{lien_sauvegarde}`")
     except Exception as e:
