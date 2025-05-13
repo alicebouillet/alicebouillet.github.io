@@ -19,8 +19,10 @@ if "df" not in st.session_state:
 
 df = st.session_state.df
 df["Description"] = df["Description"].astype(str)
-df["Date de début"] = pd.to_datetime(df["Date de début"], errors='coerce')
-
+df["Attribué à"] = df["Attribué à"].astype(str)
+for col in ["Date de début", "Date de fin"]:
+    if col in df.columns:
+        df[col] = pd.to_datetime(df[col], errors='coerce')
 # --- Sidebar navigation ---
 st.sidebar.title("Navigation")
 onglet = st.sidebar.radio("Aller à :", [
@@ -190,12 +192,52 @@ elif onglet == "🗑️ Supprimer une tâche":
         st.write("Tâches restantes après suppression :")
         st.dataframe(df)
 # --- Onglet 6 : Suivi du budget ---
+# --- Onglet 6 : Suivi du budget ---
 elif onglet == "💰 Budget":
     st.title("💰 Suivi du budget")
+
     if "Budget prévu" in df.columns and "Budget utilisé" in df.columns:
-        st.dataframe(df[["Nom de tâche", "Budget prévu", "Budget utilisé", "Inclus dans budget", "Pris en charge par"]])
+        # Résumé des montants
+        total_prevu = df["Budget prévu"].sum()
+        total_utilise = df["Budget utilisé"].sum()
+        ecart = total_prevu - total_utilise
+
+        col1, col2, col3 = st.columns(3)
+        col1.metric("💼 Budget prévu total", f"{total_prevu:.2f} €")
+        col2.metric("💸 Budget utilisé total", f"{total_utilise:.2f} €")
+        col3.metric("📉 Écart restant", f"{ecart:.2f} €", delta=f"{-ecart:.2f} €" if ecart < 0 else f"+{ecart:.2f} €")
+
+        st.markdown("---")
+
+        # Diagramme comparatif par tâche
+        fig1 = px.bar(df, x="Nom de tâche", y=["Budget prévu", "Budget utilisé"],
+                     barmode="group", title="📊 Budget prévu vs utilisé par tâche")
+        st.plotly_chart(fig1, use_container_width=True)
+
+        # Répartition du budget prévu par poste (si dispo)
+        if "Inclus dans budget" in df.columns:
+            repartition = df.groupby("Inclus dans budget")[["Budget prévu"]].sum().reset_index()
+            fig2 = px.pie(repartition, values="Budget prévu", names="Inclus dans budget",
+                          title="🍕 Répartition du budget prévu par poste")
+            st.plotly_chart(fig2, use_container_width=True)
+
+        st.markdown("---")
+
+        # Filtre par "Pris en charge par"
+        if "Pris en charge par" in df.columns:
+            options = ["Tous"] + sorted(df["Pris en charge par"].dropna().unique())
+            choix_responsable = st.selectbox("Filtrer par responsable du financement :", options)
+
+            if choix_responsable != "Tous":
+                df_filtre = df[df["Pris en charge par"] == choix_responsable]
+            else:
+                df_filtre = df
+
+            st.dataframe(df_filtre[["Nom de tâche", "Budget prévu", "Budget utilisé", "Inclus dans budget", "Pris en charge par"]])
+
     else:
-        st.warning("Colonnes de budget manquantes.")
+        st.warning("❗ Colonnes de budget manquantes dans le fichier.")
+
 
 st.sidebar.markdown("---")
 if st.sidebar.button("💾 Sauvegarder les modifications"):
